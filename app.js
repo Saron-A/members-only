@@ -19,9 +19,7 @@ express.json();
 express.urlencoded({ extended: true }); // to parse form data
 
 //step 1 - continued
-express.request(
-  session({ secret: "cats", resave: false, saveUninitialized: false })
-);
+app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -100,11 +98,11 @@ app.get("/", async (req, res) => {
   // check if the user is authenticated
   if (req.isAuthenticated()) {
     const results = await db.getAllPostsWithUsernames();
-    res.render("index", { user: req.user, posts: results });
+    res.render("index", { user: req.user });
   }
 
   const results = await db.getAllPosts();
-  res.render("index", { user: null, posts: results });
+  res.render("index", { user: null });
 });
 
 app.get("/signup", (req, res) => {

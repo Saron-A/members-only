@@ -22,7 +22,7 @@ const pool = require("./pool");
 //GET QUERIES
 const getAllPosts = async () => {
   const { rows } = await pool.query(
-    "SELECT message FROM posts ORDER BY created_at DESC"
+    "SELECT message FROM posts ORDER BY timestamp DESC"
   );
   return rows;
 };
