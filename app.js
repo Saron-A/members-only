@@ -78,6 +78,23 @@ const accessPath = path.join(__dirname, "public");
 app.use(express.static(accessPath));
 
 //routes
+//GET
+// get / - all messages
+// get /login - login form
+//get /signup - signup form
+//get /create_message - create message form
+//get /member_form - membership application form
+//get /private - private page for members only
+//get /logout - logout user
+
+//POST
+//post /signup - process signup form - send data to db
+//post /login - process login form data - authenticate user
+//post /member_form - process membership application form data
+//post /create_message - process create message form data
+
+//PUT - edit ones own message
+//DELETE - admin delete any message, users delete their own messages
 
 app.listen(PORT, (err) => {
   if (err) {
