@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const pool = require("./db/pool");
+const db = require("./db/queries");
 // step 1: import and initialize session and passport
 const session = require("express-session");
 const passport = require("passport");
@@ -95,6 +96,46 @@ app.use(express.static(accessPath));
 
 //PUT - edit ones own message
 //DELETE - admin delete any message, users delete their own messages
+app.get("/", async (req, res) => {
+  // check if the user is authenticated
+  if (req.isAuthenticated()) {
+    const results = await db.getAllPostsWithUsernames();
+    res.render("index", { user: req.user, posts: results });
+  }
+
+  const results = await db.getAllPosts();
+  res.render("index", { user: null, posts: results });
+});
+
+app.get("/signup", (req, res) => {
+  res.render("signup");
+});
+
+app.post("/signup", async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query("INSERT INTO users (username, password) VALUES ($1,$2)", [
+      username,
+      hashedPassword,
+    ]);
+    res.redirect("/login");
+  } catch (err) {
+    return next(err);
+  }
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
 
 app.listen(PORT, (err) => {
   if (err) {

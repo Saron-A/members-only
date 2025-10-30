@@ -19,6 +19,7 @@ const pool = require("./pool");
 //PUT - edit ones own message
 //DELETE - admin delete any message, users delete their own messages
 
+//GET QUERIES
 const getAllPosts = async () => {
   const { rows } = await pool.query(
     "SELECT message FROM posts ORDER BY created_at DESC"
@@ -58,6 +59,8 @@ const getAllPostsWithUsernames = async () => {
   );
   return rows;
 };
+
+//POST QUERIES
 
 module.exports = {
   getAllPosts,
