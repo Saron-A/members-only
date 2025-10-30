@@ -171,6 +171,13 @@ app.post("/create_message", async (req, res) => {
   res.redirect("/");
 });
 
+app.get("/log-out", (req, res, next) => {
+  req.logOut((err) => {
+    if (err) return next(err);
+    redirect("/");
+  });
+});
+
 app.listen(PORT, (err) => {
   if (err) {
     throw err;
