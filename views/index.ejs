@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Members Only Club</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/signup">Sign Up</a></li>
+        <li><a href="/login">Log In</a></li>
+        <%if(user) {%>
+        <li><a href="/create_message">Create Post</a></li>
+        <li><a href="/membership-form">Became a member</a></li>
+        } %>
+      </ul>
+    </nav>
+    <header>
+      <h1>Welcome to Members Only app</h1>
+      <p><span>Post and read messages from all over the world!</span></p>
+    </header>
+    <div class="messages"></div>
+  </body>
+</html>
