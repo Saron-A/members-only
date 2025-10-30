@@ -37,7 +37,7 @@ const getUserById = async (userId) => {
 const getAllPostsByUserId = async (userId) => {
   //posts.message, users.username, posts.timestamp - if membership is added later, we can join that too
   const { rows } = await pool.query(
-    "SELECT users.username, posts.message FROM posts Join users On posts.user_id = $1",
+    "SELECT users.username, posts.message, posts.timestamp FROM posts JOIN users ON posts.user_id = users.id  WHERE users.id = $1 ORDER BY posts.timestamp DESC",
     [userId]
   );
   return rows;
@@ -46,7 +46,7 @@ const getAllPostsByUserId = async (userId) => {
 const getUserByUsername = async (username) => {
   //users.username, posts.message, posts.timestamp
   const { rows } = await pool.query(
-    "SELECT users.username, posts.message posts.timestamp FROM users Join posts On users.username=$1",
+    "SELECT users.username, posts.message, posts.timestamp FROM users JOIN posts ON users.id = posts.user_id WHERE users.username = $1    ORDER BY posts.timestamp DESC",
     [username]
   );
   return rows;
@@ -55,12 +55,19 @@ const getUserByUsername = async (username) => {
 const getAllPostsWithUsernames = async () => {
   //users.username, posts.message, posts.timestamp
   const { rows } = await pool.query(
-    "SELECT users.username, posts.message, posts.created_at FROM users Join posts On users.id=posts.user_id ORDER BY posts.timestamp DESC"
+    "SELECT users.username, posts.message, posts.timestamp FROM users Join posts On users.id=posts.user_id ORDER BY posts.timestamp DESC"
   );
   return rows;
 };
 
 //POST QUERIES
+
+const createPost = async (userId, message) => {
+  await pool.query("INSERT INTO posts (user_id, message) VALUES($1,$2)", [
+    userId,
+    message,
+  ]);
+};
 
 module.exports = {
   getAllPosts,
@@ -68,4 +75,5 @@ module.exports = {
   getAllPostsByUserId,
   getUserByUsername,
   getAllPostsWithUsernames,
+  createPost,
 };

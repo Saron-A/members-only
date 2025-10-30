@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Post</title>
+  </head>
+  <body>
+    <%if(user) {%>
+    <h1>Create Post</h1>
+    <form action="/create_message" method="POST">
+      <label for="message">Your Message:</label>
+      <textarea name="message" id="message" required></textarea>
+      <button type="submit">Post Message</button>
+    </form>
+    <% } %>
+  </body>
+</html>

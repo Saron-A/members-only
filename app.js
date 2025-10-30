@@ -15,8 +15,8 @@ const localStrategy = require("passport-local").Strategy;
 const PORT = process.env.PORT || 3000;
 
 // json and urlencoded
-express.json();
-express.urlencoded({ extended: true }); // to parse form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // to parse form data
 
 //step 1 - continued
 app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
@@ -94,24 +94,45 @@ app.use(express.static(accessPath));
 
 //PUT - edit ones own message
 //DELETE - admin delete any message, users delete their own messages
-app.get("/", async (req, res) => {
-  // check if the user is authenticated
-  if (req.isAuthenticated()) {
-    const results = await db.getAllPostsWithUsernames();
-    res.render("index", { user: req.user });
+app.get("/debug", async (req, res) => {
+  try {
+    const posts = await db.getAllPostsWithUsernames();
+    res.send(posts);
+  } catch (err) {
+    res.send(err.message);
   }
-
-  const results = await db.getAllPosts();
-  res.render("index", { user: null });
 });
 
+app.get("/", async (req, res) => {
+  try {
+    let results;
+    //check if user is authenticated
+    if (req.isAuthenticated() && req.user.is_member) {
+      results = await db.getAllPostsWithUsernames(); //array of objects [{username: '...', message: '...', timestamp: '...'}, {...}]
+    } else {
+      results = await db.getAllPosts(); // array of objects [{message: '...'}, {...}]
+    }
+
+    console.log(results); // now logs real rows array ✅
+
+    res.render("index", { user: req.user || null, posts: results });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ err: err.message });
+  }
+});
 app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
 app.post("/signup", async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, confirm_pass } = req.body;
+
+    if (password !== confirm_pass) {
+      return res.render("signup", { message: "Passwords do not match" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query("INSERT INTO users (username, password) VALUES ($1,$2)", [
       username,
@@ -134,6 +155,21 @@ app.post(
     failureRedirect: "/login",
   })
 );
+
+app.get("/create_message", (req, res) => {
+  res.render("create_message", { user: req.user });
+});
+
+app.post("/create_message", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.redirect("/login");
+  }
+  const user = req.user;
+  const userId = user.id;
+  const { message } = req.body;
+  await db.createPost(userId, message);
+  res.redirect("/");
+});
 
 app.listen(PORT, (err) => {
   if (err) {

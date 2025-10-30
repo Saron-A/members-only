@@ -21,6 +21,20 @@
       <h1>Welcome to Members Only app</h1>
       <p><span>Post and read messages from all over the world!</span></p>
     </header>
-    <div class="messages"></div>
+    <div class="messages">
+      <%if(posts && posts.length > 0) {%> <%posts.forEach((post) => {%>
+      <ul>
+        <li>
+          <h3><%=post.message%></h3>
+          <% if(user&& user.is_member) {%>
+          <p>Posted by: <%=post.username%></p>
+          <p>Posted at:<%=post.timestamp%></p>
+        </li>
+        <% } %>
+      </ul>
+      <%}) }else { %>
+      <p>No posts available.</p>
+      <% } %>
+    </div>
   </body>
 </html>
