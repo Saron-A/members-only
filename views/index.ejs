@@ -14,7 +14,9 @@
         <li><a href="/login">Log In</a></li>
         <%}%> <%if(user) {%>
         <li><a href="/create_message">Create Post</a></li>
+        <%if(!user.is_member) {%>
         <li><a href="/member_form">Became a member</a></li>
+        <%}%>
         <li><a href="/log-out">Log Out</a></li>
         <%} %>
       </ul>
