@@ -2,13 +2,15 @@
 
 <% if (!found) { %>
 <p>No user found.</p>
+<% } else { const canViewPosts = user && (user.is_member || user.username ===
+posts.username); %> <% if (!canViewPosts) { %>
+<p>User exists: <%= posts.username %></p>
 <% } else { %>
 <h2>Posts by <%= posts.username %></h2>
-
 <% posts.posts.forEach(p => { %>
 <div>
   <p><%= p.message %></p>
   <small><%= p.timestamp %></small>
 </div>
 <hr />
-<% }); %> <% } %>
+<% }); %> <% } %> <% } %>

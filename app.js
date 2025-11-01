@@ -214,17 +214,27 @@ app.get("/search_users", async (req, res) => {
     }
     const results = await db.getUserByUsername(search_query);
     if (!results || results.length === 0) {
-      return res.render("search_results", { found: false, posts: null });
+      return res.render("search_results", {
+        user: req.user || null,
+        found: false,
+        posts: null,
+      });
     }
     const search_results = {
       username: results[0].username,
-      posts: results.map((post) => ({
-        message: post.message,
-        timestamp: post.timestamp,
-      })),
+      posts:
+        results.map((post) => ({
+          message: post.message,
+          timestamp: post.timestamp,
+          id: post.id,
+        })) || null,
     };
 
-    res.render("search_results", { found: true, posts: search_results });
+    res.render("search_results", {
+      found: true,
+      user: req.user || null,
+      posts: search_results,
+    });
 
     // console.log(response);
   } catch (err) {

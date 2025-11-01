@@ -20,6 +20,7 @@
         <li><a href="/log-out">Log Out</a></li>
         <%} %>
       </ul>
+      <% if(user) {%>
       <div class="search">
         <form action="/search_users" method="GET">
           <!-- method is get because we are fetching content from the database using the form -->
@@ -31,6 +32,7 @@
           <button type="submit">Search</button>
         </form>
       </div>
+      <% } %>
     </nav>
     <header>
       <h1>
