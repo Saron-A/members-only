@@ -214,7 +214,7 @@ app.get("/search_users", async (req, res) => {
     }
     const results = await db.getUserByUsername(search_query);
     if (!results || results.length === 0) {
-      res.render("search_result", { found: false, posts: null });
+      return res.render("search_results", { found: false, posts: null });
     }
     const search_results = {
       username: results[0].username,
