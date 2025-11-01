@@ -113,7 +113,7 @@ app.get("/", async (req, res) => {
       results = await db.getAllPosts(); // array of objects [{message: '...'}, {...}]
     }
 
-    console.log(results); // now logs real rows array ✅
+    // console.log(results); // now logs real rows array ✅
 
     res.render("index", { user: req.user || null, posts: results });
   } catch (err) {
@@ -204,6 +204,35 @@ app.get("/log-out", (req, res, next) => {
     res.redirect("/");
   });
 });
+
+app.get("/search_users", async (req, res) => {
+  try {
+    const { search_query } = req.query;
+    if (!search_query) {
+      //if empty or null or undefined
+      return res.redirect("/");
+    }
+    const results = await db.getUserByUsername(search_query);
+    if (!results || results.length === 0) {
+      res.render("search_result", { found: false, posts: null });
+    }
+    const search_results = {
+      username: results[0].username,
+      posts: results.map((post) => ({
+        message: post.message,
+        timestamp: post.timestamp,
+      })),
+    };
+
+    res.render("search_results", { found: true, posts: search_results });
+
+    // console.log(response);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//Server listens for connection
 
 app.listen(PORT, (err) => {
   if (err) {

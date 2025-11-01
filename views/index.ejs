@@ -20,6 +20,17 @@
         <li><a href="/log-out">Log Out</a></li>
         <%} %>
       </ul>
+      <div class="search">
+        <form action="/search_users" method="GET">
+          <!-- method is get because we are fetching content from the database using the form -->
+          <input
+            type="text"
+            placeholder="Search users by username"
+            name="search_query"
+          />
+          <button type="submit">Search</button>
+        </form>
+      </div>
     </nav>
     <header>
       <h1>
