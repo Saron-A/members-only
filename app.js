@@ -171,10 +171,37 @@ app.post("/create_message", async (req, res) => {
   res.redirect("/");
 });
 
+app.get("/member_form", (req, res) => {
+  res.render("member_form");
+});
+
+app.post("/member_form", async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.redirect("/login");
+    }
+
+    const { membership_password } = req.body;
+
+    const user = req.user;
+    const userId = user.id;
+    if (membership_password === process.env.MEMBERSHIP_PASSWORD) {
+      await pool.query("UPDATE users SET is_member = true WHERE users.id=$1", [
+        userId,
+      ]);
+      res.redirect("/");
+    } else {
+      res.status(401).send("Incorrect membership password");
+    }
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
 app.get("/log-out", (req, res, next) => {
-  req.logOut((err) => {
+  req.logout((err) => {
     if (err) return next(err);
-    redirect("/");
+    res.redirect("/");
   });
 });
 

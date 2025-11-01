@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Membership form</title>
+  </head>
+  <body>
+    <h1>Become a member of Members Only club</h1>
+    <form action="/member_form" method="POST">
+      <label for="member">Enter the secret password: </label>
+      <input
+        type="password"
+        name="membership_password"
+        id="member"
+        required
+        autocomplete="off"
+      />
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
